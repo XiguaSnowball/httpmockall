@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.mappers.HttpMockMapper">
+    <resultMap id="BaseResultMap" type="com.manage.model.HttpMock">
+        <!--@mbg.generated-->
+        <!--@Table t_api-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="service_name" jdbcType="VARCHAR" property="serviceName"/>
+        <result column="method_type" jdbcType="VARCHAR" property="methodType"/>
+        <result column="request_path" jdbcType="VARCHAR" property="requestPath"/>
+        <result column="request_query" jdbcType="VARCHAR" property="requestQuery"/>
+        <result column="request_body" jdbcType="VARCHAR" property="requestBody"/>
+        <result column="response_body" jdbcType="VARCHAR" property="responseBody"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, create_time, service_name, method_type,request_path,request_query,request_body,response_body,description
+  </sql>
+
+    <select id="selectByPrimaryKey" resultType="com.manage.model.HttpMock" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from httpmock
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!--<select id="selectHttpMocks" resultMap="BaseResultMap" parameterType="com.example.model.HttpMock" >-->
+    <select id="selectHttpMocks" resultMap="BaseResultMap"
+            parameterType="com.manage.model.HttpMock">
+        select
+        <include refid="Base_Column_List"/>
+        from httpmock
+        <where>
+            <if test="serviceName != null and serviceName !=''">
+                AND service_name = #{serviceName,jdbcType=VARCHAR}
+            </if>
+            <if test="requestPath != null and requestPath !=''">
+                AND request_path = #{requestPath,jdbcType=VARCHAR}
+            </if>
+            <if test="requestQuery != null and requestQuery !=''">
+                AND request_query = #{requestQuery,jdbcType=VARCHAR}
+            </if>
+            <if test="requestBody != null and requestBody !=''">
+                AND request_body = #{requestBody,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCount" resultType="Integer" parameterType="com.manage.model.HttpMockRequestBean">
+        SELECT count(*) FROM httpmock
+        <where>
+            <if test="serviceName != null and serviceName !=''">
+                AND locate (#{serviceName},service_name)
+            </if>
+            <if test="requestPath != null and requestPath !=''">
+                AND locate (#{requestPath},request_path)
+            </if>
+            <if test="methodType != null and methodType !=''">
+                AND locate (#{methodType},method_type)
+            </if>
+            <if test="requestQuery != null and requestQuery !=''">
+                AND locate (#{requestQuery},request_query)
+            </if>
+            <if test="requestBody != null and requestBody !=''">
+                AND locate (#{requestBody},request_body)
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCount1" resultType="Integer" parameterType="com.manage.model.HttpMockRequestBean">
+        SELECT count(*) FROM httpmock
+        where 1=1
+        <where>
+            <if test="serviceName != null and serviceName !=''">
+                AND service_name = #{serviceName,jdbcType=VARCHAR}
+            </if>
+            <if test="requestPath != null and requestPath !=''">
+                AND request_path = #{requestPath,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+    <select id="selectByPage" resultMap="BaseResultMap"
+            parameterType="com.manage.model.HttpMockRequestBean">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM httpmock
+        <where>
+            <if test="serviceName != null and serviceName !=''">
+                AND locate (#{serviceName},service_name)
+            </if>
+            <if test="requestPath != null and requestPath !=''">
+                AND locate (#{requestPath},request_path)
+            </if>
+            <if test="methodType != null and methodType !=''">
+                AND locate (#{methodType},method_type)
+            </if>
+            <if test="requestQuery != null and requestQuery !=''">
+                AND locate (#{requestQuery},request_query)
+            </if>
+            <if test="requestBody != null and requestBody !=''">
+                AND locate (#{requestBody},request_body)
+            </if>
+        </where>
+        order by create_time desc
+        limit #{startIndex},#{pageSize}
+    </select>
+
+    <insert id="insertHttpMock" parameterType="com.manage.model.HttpMock">
+        insert into httpmock(service_name, method_type, request_path, request_query, request_body, response_body,description)
+        values (#{serviceName},#{methodType},#{requestPath},#{requestQuery},#{requestBody},#{responseBody},#{description});
+    </insert>
+
+    <update id="updateHttpMock" parameterType="com.manage.model.HttpMock">
+        update httpmock set service_name=#{serviceName},method_type=#{methodType},request_path=#{requestPath},request_query=#{requestQuery},request_body=#{requestBody},response_body=#{responseBody},description=#{description} where id=#{id}
+    </update>
+
+    <delete id="deleteHttpMock" parameterType="java.lang.Integer">
+        delete from httpmock where id=#{id}
+    </delete>
+
+
+</mapper>
